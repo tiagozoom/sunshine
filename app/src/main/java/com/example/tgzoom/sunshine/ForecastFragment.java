@@ -1,6 +1,7 @@
 package com.example.tgzoom.sunshine;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,10 +11,19 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class ForecastFragment extends Fragment {
+
+    private ArrayList<String> forecastArrayList;
+    private ListView listViewForecast = null;
+    private ArrayAdapter forecastArrayAdapter = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,7 +36,23 @@ public class ForecastFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_forecast, container, false);
+        View rootView =  inflater.inflate(R.layout.fragment_forecast, container, false);
+        this.listViewForecast = (ListView) rootView.findViewById(R.id.listview_forecast);
+        new ForecastAsyncTask(this.forecastArrayAdapter,this.listViewForecast,rootView).execute();
+
+        listViewForecast.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent forecast_intent = new Intent(getActivity(),DetailActivity.class);
+                forecast_intent.setAction(Intent.ACTION_VIEW);
+                String forecast = forecastArrayList.get(position);
+                forecast_intent.putExtra("Forecast",forecast);
+                startActivity(forecast_intent);
+            }
+
+        });
+
+        return rootView;
     }
 
     @Override
@@ -39,7 +65,7 @@ public class ForecastFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_refresh:
-                new ForecastAsyncTask().execute();
+                //new ForecastAsyncTask().execute();
                 break;
             default:
                 return super.onOptionsItemSelected(item);

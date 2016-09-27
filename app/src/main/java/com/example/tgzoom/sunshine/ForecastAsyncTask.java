@@ -43,7 +43,10 @@ public class ForecastAsyncTask extends AsyncTask<Void,ArrayList<String>,ArrayLis
     @Override
     protected void onPostExecute(ArrayList<String> forecastArrayList) {
         super.onPostExecute(forecastArrayList);
-        this.forecastArrayAdapter = new ArrayAdapter(this.context.getContext(),R.layout.list_item_forecast,forecastArrayList);
-        this.listViewForecast.setAdapter(forecastArrayAdapter);
+        this.forecastArrayAdapter.clear();
+        for (String forecastItem: forecastArrayList) {
+            this.forecastArrayAdapter.add(forecastItem);
+        }
+        this.forecastArrayAdapter.notifyDataSetChanged();
     }
 }

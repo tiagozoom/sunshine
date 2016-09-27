@@ -21,9 +21,9 @@ import java.util.Arrays;
 
 public class ForecastFragment extends Fragment {
 
-    private ArrayList<String> forecastArrayList;
-    private ListView listViewForecast = null;
-    private ArrayAdapter forecastArrayAdapter = null;
+    private ArrayList<String> forecastArrayList = new ArrayList<>();
+    private ListView listViewForecast           = null;
+    private ArrayAdapter forecastArrayAdapter   = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,6 +38,10 @@ public class ForecastFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView =  inflater.inflate(R.layout.fragment_forecast, container, false);
         this.listViewForecast = (ListView) rootView.findViewById(R.id.listview_forecast);
+
+        this.forecastArrayAdapter = new ArrayAdapter(getContext(),R.layout.list_item_forecast,forecastArrayList);
+        this.listViewForecast.setAdapter(forecastArrayAdapter);
+
         new ForecastAsyncTask(this.forecastArrayAdapter,this.listViewForecast,rootView).execute();
 
         listViewForecast.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -45,7 +45,9 @@ public class ForecastFragment extends Fragment {
         this.forecastArrayAdapter = new ArrayAdapter(getContext(),R.layout.list_item_forecast,forecastArrayList);
         this.listViewForecast.setAdapter(forecastArrayAdapter);
 
-        new ForecastAsyncTask(this.forecastArrayAdapter,this.listViewForecast,rootView).execute();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String location = sharedPreferences.getString(getString(R.string.pref_location_key),getString(R.string.pref_location_default_value));
+        new ForecastAsyncTask(this.forecastArrayAdapter,this.listViewForecast,rootView,location).execute();
 
         listViewForecast.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

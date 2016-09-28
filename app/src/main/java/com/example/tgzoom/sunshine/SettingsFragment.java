@@ -19,21 +19,21 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
         onSharedPreferenceChanged(
                 getPreferenceManager().getSharedPreferences(),
-                getString(R.string.pref_units_default_value)
+                getString(R.string.pref_units_key)
         );
 
         onSharedPreferenceChanged(
                 getPreferenceManager().getSharedPreferences(),
-                getString(R.string.pref_location_default_value)
+                getString(R.string.pref_location_key)
         );
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if(key.equals(getString(R.string.pref_units_default_value))){
+        if(key.equals(getString(R.string.pref_units_key))){
             Preference preference = findPreference(key);
             preference.setSummary(sharedPreferences.getString(key,getString(R.string.pref_units_default_value)));
-        }else if(key.equals(getString(R.string.pref_location_default_value))){
+        }else if(key.equals(getString(R.string.pref_location_key))){
             Preference preference = findPreference(key);
             preference.setSummary(sharedPreferences.getString(key,getString(R.string.pref_location_default_value)));
         }

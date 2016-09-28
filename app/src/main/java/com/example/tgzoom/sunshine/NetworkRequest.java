@@ -21,7 +21,7 @@ public class NetworkRequest {
     private final static String UNITS       = "units";
     private final static String APPID       = "appid";
 
-    private String buildUrl(){
+    private String buildUrl(String location){
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("http")
                 .authority("api.openweathermap.org")
@@ -29,7 +29,7 @@ public class NetworkRequest {
                 .appendPath("2.5")
                 .appendPath("forecast")
                 .appendPath("daily")
-                .appendQueryParameter(LOCATION,"94043")
+                .appendQueryParameter(LOCATION,location)
                 .appendQueryParameter(UNITS,"metric")
                 .appendQueryParameter(APPID,"bf39d9dabdfdca45aaaed83b3420961f");
 
@@ -75,18 +75,16 @@ public class NetworkRequest {
         return null;
     }
 
-    public String getWeatherString(){
+    public String getWeatherString(String location){
         try{
-            String urlString = buildUrl();
+            String urlString = buildUrl(location);
             URL url = new URL(urlString);
             httpURLConnection = openConection(url,"GET");
             InputStream inputStream = httpURLConnection.getInputStream();
             bufferedReader = generateBufferedReader(inputStream);
-
             if(bufferedReader == null){
                 return null;
             }
-
             forecastJsonStr = readBufferedReader(bufferedReader);
             return forecastJsonStr;
         }catch (Exception e){

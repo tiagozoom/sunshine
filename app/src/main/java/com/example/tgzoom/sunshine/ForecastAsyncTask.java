@@ -19,18 +19,20 @@ public class ForecastAsyncTask extends AsyncTask<Void,ArrayList<String>,ArrayLis
     private ArrayAdapter forecastArrayAdapter   = null;
     private ListView listViewForecast           = null;
     private View context                        = null;
+    private String location                     = null;
 
-    public ForecastAsyncTask(ArrayAdapter forecastArrayAdapter, ListView listViewForecast, View context) {
+    public ForecastAsyncTask(ArrayAdapter forecastArrayAdapter, ListView listViewForecast, View context, String location) {
         this.forecastArrayAdapter = forecastArrayAdapter;
         this.listViewForecast     = listViewForecast;
         this.context              = context;
+        this.location             = location;
     }
 
     @Override
     protected ArrayList<String> doInBackground(Void... voids) {
         try {
             NetworkRequest networkRequest = new NetworkRequest();
-            String weatherString = networkRequest.getWeatherString();
+            String weatherString = networkRequest.getWeatherString(this.location);
             ForecastParser forecastParser = new ForecastParser();
             ArrayList<String> forecastArrayList = forecastParser.parseJson(weatherString);
             return forecastArrayList;
@@ -44,8 +46,11 @@ public class ForecastAsyncTask extends AsyncTask<Void,ArrayList<String>,ArrayLis
     protected void onPostExecute(ArrayList<String> forecastArrayList) {
         super.onPostExecute(forecastArrayList);
         this.forecastArrayAdapter.clear();
-        for (String forecastItem: forecastArrayList) {
-            this.forecastArrayAdapter.add(forecastItem);
+
+        if(forecastArrayList != null) {
+            for (String forecastItem : forecastArrayList) {
+                this.forecastArrayAdapter.add(forecastItem);
+            }
         }
         this.forecastArrayAdapter.notifyDataSetChanged();
     }

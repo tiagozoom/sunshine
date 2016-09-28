@@ -4,5 +4,11 @@
         android:id="@+id/action_refresh"
         android:title="@string/action_refresh"
         android:showAsAction="always"
-        ></item>
+        />
+
+    <item
+        android:id="@+id/settings"
+        android:title="@string/settings"
+        android:showAsAction="always"
+        />
 </menu>

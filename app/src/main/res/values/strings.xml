@@ -1,21 +1,28 @@
 <resources>
+    <!-- App global display name-->
     <string name="app_name">Sunshine</string>
+
     <!-- Menu Strings -->
     <string name="action_refresh">Refresh</string>
     <string name="settings">Settings</string>
     <string name="title_activity_settings">Settings</string>
 
-    <string name="pre_units_measure">pre_units</string>
-    <string-array name="pref_units_list_titles">
+
+    <!-- Definition of settings preference array of entries and values -->
+    <string-array name="pref_units_entries">
         <item>Metric</item>
         <item>Imperial</item>
     </string-array>
-    <string-array name="pref_units_list_values">
-        <item>0</item>
-        <item>1</item>
+    <string-array name="pref_units_entries_values">
+        <item>metric</item>
+        <item>imperial</item>
     </string-array>
-    <string name="pref_header_units">Units</string>
+    <string name="pref_units_default_value">metric</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Definition of settings preference titles -->
+    <string name="pref_units_title">Weather measure unit</string>
+    <string name="pref_units_dialog_title">Units</string>
+    <string name="pref_location_title">Location</string>
+    <string name="pref_location_dialog_title">Location</string>
+    <string name="pref_location_default_value">94043</string>
 </resources>

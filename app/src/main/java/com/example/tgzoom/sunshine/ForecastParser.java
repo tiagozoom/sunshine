@@ -4,6 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.text.format.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -81,9 +83,7 @@ public class ForecastParser {
                     highLow + " - " +
                     description
             );
-
         }
-
         return forecastStringArray;
     }
 }

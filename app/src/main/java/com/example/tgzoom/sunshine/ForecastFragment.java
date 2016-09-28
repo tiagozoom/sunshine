@@ -2,9 +2,12 @@ package com.example.tgzoom.sunshine;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,11 +50,11 @@ public class ForecastFragment extends Fragment {
         listViewForecast.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent forecast_intent = new Intent(getActivity(),DetailActivity.class);
-                forecast_intent.setAction(Intent.ACTION_VIEW);
-                String forecast = forecastArrayList.get(position);
-                forecast_intent.putExtra("Forecast",forecast);
-                startActivity(forecast_intent);
+            Intent forecast_intent = new Intent(getActivity(),DetailActivity.class);
+            forecast_intent.setAction(Intent.ACTION_VIEW);
+            String forecast = forecastArrayList.get(position);
+            forecast_intent.putExtra("Forecast",forecast);
+            startActivity(forecast_intent);
             }
 
         });
@@ -71,6 +74,10 @@ public class ForecastFragment extends Fragment {
             case R.id.action_refresh:
                 //new ForecastAsyncTask().execute();
                 break;
+            case R.id.settings:
+                Intent settings_intent = new Intent(getContext(),SettingsActivity.class);
+                settings_intent.setAction(Intent.ACTION_VIEW);
+                startActivity(settings_intent);
             default:
                 return super.onOptionsItemSelected(item);
         }

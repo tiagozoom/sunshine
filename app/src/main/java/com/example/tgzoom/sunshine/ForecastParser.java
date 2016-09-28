@@ -22,6 +22,11 @@ public class ForecastParser {
     private final static String DESCRIPTION = "main";
     private final static String WEATHER     = "weather";
     private final static String LIST        = "list";
+    private String units;
+
+    public ForecastParser(String units){
+        this.units = units;
+    }
 
     /* The date/time conversion code is going to be moved outside the asynctask later,
         * so for convenience we're breaking it out into its own method now.
@@ -35,6 +40,11 @@ public class ForecastParser {
      * Prepare the weather high/lows for presentation.
      */
     private String formatHighLows(double high, double low) {
+
+        if(this.units.equals("imperial")){
+            high = (high * 1.8) + 32;
+            low  = (low * 1.8) + 32;
+        }
         // For presentation, assume the user doesn't care about tenths of a degree.
         long roundedHigh = Math.round(high);
         long roundedLow = Math.round(low);

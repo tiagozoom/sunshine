@@ -79,6 +79,7 @@ public class NetworkRequest {
         try{
             String urlString = buildUrl(location);
             URL url = new URL(urlString);
+            Log.i("URL weather",url.toString());
             httpURLConnection = openConection(url,"GET");
             InputStream inputStream = httpURLConnection.getInputStream();
             bufferedReader = generateBufferedReader(inputStream);

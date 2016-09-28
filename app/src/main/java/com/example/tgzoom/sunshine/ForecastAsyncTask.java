@@ -17,15 +17,13 @@ import java.util.ArrayList;
  */
 public class ForecastAsyncTask extends AsyncTask<Void,ArrayList<String>,ArrayList<String>> {
     private ArrayAdapter forecastArrayAdapter   = null;
-    private ListView listViewForecast           = null;
-    private View context                        = null;
     private String location                     = null;
+    private String units                        = null;
 
-    public ForecastAsyncTask(ArrayAdapter forecastArrayAdapter, ListView listViewForecast, View context, String location) {
+    public ForecastAsyncTask(ArrayAdapter forecastArrayAdapter, String location, String units) {
         this.forecastArrayAdapter = forecastArrayAdapter;
-        this.listViewForecast     = listViewForecast;
-        this.context              = context;
         this.location             = location;
+        this.units                = units;
     }
 
     @Override
@@ -33,7 +31,7 @@ public class ForecastAsyncTask extends AsyncTask<Void,ArrayList<String>,ArrayLis
         try {
             NetworkRequest networkRequest = new NetworkRequest();
             String weatherString = networkRequest.getWeatherString(this.location);
-            ForecastParser forecastParser = new ForecastParser();
+            ForecastParser forecastParser = new ForecastParser(this.units);
             ArrayList<String> forecastArrayList = forecastParser.parseJson(weatherString);
             return forecastArrayList;
         } catch (JSONException e) {

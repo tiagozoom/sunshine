@@ -15,6 +15,7 @@ import java.util.ArrayList;
  */
 public class ForecastParser {
     private ArrayList<String> forecastStringArray = new ArrayList<String>();
+
     private final static String DAY         = "dt";
     private final static String TEMPERATURE = "temp";
     private final static String MAX         = "max";

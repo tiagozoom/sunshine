@@ -62,11 +62,13 @@ public class WeatherContract {
 
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_WEATHER).build();
+
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_WEATHER;
 
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_WEATHER;
+
 
         public static final String COLUMN_LOC_KEY = "location_id";
         public static final String COLUMN_DATE = "date";
@@ -81,6 +83,30 @@ public class WeatherContract {
 
         public static Uri buildWeatherUri(long id){
             return ContentUris.withAppendedId(CONTENT_URI,id);
+        }
+
+        public static Uri buildWeatherLocation(String locationSetting){
+            return CONTENT_URI.buildUpon().appendPath(locationSetting).build();
+        }
+
+        public static String getLocationSettingFromUri(Uri uri) {
+            return "94043";
+        }
+
+        public static long getStartDateFromUri(Uri uri) {
+            return 1419120000L;
+        }
+
+        public static long getDateFromUri(Uri uri) {
+            return 1419120000L;
+        }
+
+        public static Uri buildWeatherLocationWithDate(String location, long date) {
+            return CONTENT_URI.buildUpon().appendPath(location).appendPath(Long.toString(normalizeDate(date))).build();
+        }
+
+        public static Uri buildWeatherLocationWithStartDate(String location, long testDate) {
+            return null;
         }
     }
 }

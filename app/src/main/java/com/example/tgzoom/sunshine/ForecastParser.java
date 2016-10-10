@@ -29,6 +29,9 @@ public class ForecastParser {
         this.units = units;
     }
 
+    public ForecastParser(){
+    }
+
     /* The date/time conversion code is going to be moved outside the asynctask later,
         * so for convenience we're breaking it out into its own method now.
         */

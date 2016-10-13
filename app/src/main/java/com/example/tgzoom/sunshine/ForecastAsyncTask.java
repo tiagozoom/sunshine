@@ -1,11 +1,19 @@
 package com.example.tgzoom.sunshine;
 
+import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.example.tgzoom.sunshine.data.WeatherContract;
 
 import org.json.JSONException;
 
@@ -17,13 +25,18 @@ import java.util.ArrayList;
  */
 public class ForecastAsyncTask extends AsyncTask<Void,ArrayList<String>,ArrayList<String>> {
     private ArrayAdapter forecastArrayAdapter   = null;
+    private ForecastFragment parentActivity     = null;
     private String location                     = null;
     private String units                        = null;
 
-    public ForecastAsyncTask(ArrayAdapter forecastArrayAdapter, String location, String units) {
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
+    public ForecastAsyncTask(ForecastFragment parentActivity, ArrayAdapter forecastArrayAdapter) {
         this.forecastArrayAdapter = forecastArrayAdapter;
-        this.location             = location;
-        this.units                = units;
+        this.parentActivity = parentActivity;
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(parentActivity.getContext());
+        this.location = sharedPreferences.getString(parentActivity.getString(R.string.pref_location_key),parentActivity.getString(R.string.pref_location_default_value));
+        this.units    = sharedPreferences.getString(parentActivity.getString(R.string.pref_units_key),parentActivity.getString(R.string.pref_units_default_value));
     }
 
     @Override
@@ -51,5 +64,9 @@ public class ForecastAsyncTask extends AsyncTask<Void,ArrayList<String>,ArrayLis
             }
         }
         this.forecastArrayAdapter.notifyDataSetChanged();
+    }
+
+    public int addLocation(String locationSetting, String cityName, double lat, double lon){
+        return 0;
     }
 }

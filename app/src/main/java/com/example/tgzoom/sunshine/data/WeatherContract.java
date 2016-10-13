@@ -70,16 +70,16 @@ public class WeatherContract {
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_WEATHER;
 
 
-        public static final String COLUMN_LOC_KEY = "location_id";
-        public static final String COLUMN_DATE = "date";
-        public static final String COLUMN_MAX_TEMP = "max";
-        public static final String COLUMN_MIN_TEMP = "min";
-        public static final String COLUMN_HUMIDITY = "humidity";
-        public static final String COLUMN_PRESSURE = "pressure";
-        public static final String COLUMN_SHORT_DESC = "short_desc";
-        public static final String COLUMN_WIND_SPEED = "wind";
-        public static final String COLUMN_DEGREES = "degrees";
-        public static final String COLUMN_WEATHER_ID = "weather_id";
+        public static final String COLUMN_LOC_KEY       = "location_id";
+        public static final String COLUMN_DATE          = "date";
+        public static final String COLUMN_MAX_TEMP      = "max";
+        public static final String COLUMN_MIN_TEMP      = "min";
+        public static final String COLUMN_HUMIDITY      = "humidity";
+        public static final String COLUMN_PRESSURE      = "pressure";
+        public static final String COLUMN_SHORT_DESC    = "short_desc";
+        public static final String COLUMN_WIND_SPEED    = "wind";
+        public static final String COLUMN_DEGREES       = "degrees";
+        public static final String COLUMN_WEATHER_ID    = "weather_id";
 
         public static Uri buildWeatherUri(long id){
             return ContentUris.withAppendedId(CONTENT_URI,id);
@@ -90,15 +90,19 @@ public class WeatherContract {
         }
 
         public static String getLocationSettingFromUri(Uri uri) {
-            return "94043";
+            return uri.getPathSegments().get(1);
         }
 
         public static long getStartDateFromUri(Uri uri) {
-            return 1419120000L;
+            String date = uri.getQueryParameter(COLUMN_DATE);
+            if(date != null && date.length() > 0){
+                return Long.parseLong(date);
+            }
+            return 0;
         }
 
         public static long getDateFromUri(Uri uri) {
-            return 1419120000L;
+            return Long.parseLong(uri.getPathSegments().get(2));
         }
 
         public static Uri buildWeatherLocationWithDate(String location, long date) {
@@ -106,7 +110,7 @@ public class WeatherContract {
         }
 
         public static Uri buildWeatherLocationWithStartDate(String location, long testDate) {
-            return null;
+            return CONTENT_URI.buildUpon().appendPath(location).appendQueryParameter(COLUMN_DATE,String.valueOf(normalizeDate(testDate))).build();
         }
     }
 }

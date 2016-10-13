@@ -346,38 +346,38 @@ public class TestProvider extends AndroidTestCase {
         weatherValues.putAll(testValues);
 
         // Get the joined Weather and Location data
-//        weatherCursor = mContext.getContentResolver().query(
-//                WeatherEntry.buildWeatherLocation(TestUtilities.TEST_LOCATION),
-//                null, // leaving "columns" null just returns all the columns.
-//                null, // cols for "where" clause
-//                null, // values for "where" clause
-//                null  // sort order
-//        );
-//        TestUtilities.validateCursor("testInsertReadProvider.  Error validating joined Weather and Location Data.",
-//                weatherCursor, weatherValues);
+        weatherCursor = mContext.getContentResolver().query(
+                WeatherEntry.buildWeatherLocation(TestUtilities.TEST_LOCATION),
+                null, // leaving "columns" null just returns all the columns.
+                null, // cols for "where" clause
+                null, // values for "where" clause
+                null  // sort order
+        );
+        TestUtilities.validateCursor("testInsertReadProvider.  Error validating joined Weather and Location Data.",
+                weatherCursor, weatherValues);
+//
+//         Get the joined Weather and Location data with a start date
+        weatherCursor = mContext.getContentResolver().query(
+                WeatherEntry.buildWeatherLocationWithStartDate(
+                        TestUtilities.TEST_LOCATION, TestUtilities.TEST_DATE),
+                null, // leaving "columns" null just returns all the columns.
+                null, // cols for "where" clause
+                null, // values for "where" clause
+                null  // sort order
+        );
+        TestUtilities.validateCursor("testInsertReadProvider.  Error validating joined Weather and Location Data with start date.",
+                weatherCursor, weatherValues);
 
-        // Get the joined Weather and Location data with a start date
-//        weatherCursor = mContext.getContentResolver().query(
-//                WeatherEntry.buildWeatherLocationWithStartDate(
-//                        TestUtilities.TEST_LOCATION, TestUtilities.TEST_DATE),
-//                null, // leaving "columns" null just returns all the columns.
-//                null, // cols for "where" clause
-//                null, // values for "where" clause
-//                null  // sort order
-//        );
-//        TestUtilities.validateCursor("testInsertReadProvider.  Error validating joined Weather and Location Data with start date.",
-//                weatherCursor, weatherValues);
-
-        // Get the joined Weather data for a specific date
-//        weatherCursor = mContext.getContentResolver().query(
-//                WeatherEntry.buildWeatherLocationWithDate(TestUtilities.TEST_LOCATION, TestUtilities.TEST_DATE),
-//                null,
-//                null,
-//                null,
-//                null
-//        );
-//        TestUtilities.validateCursor("testInsertReadProvider.  Error validating joined Weather and Location data for a specific date.",
-//                weatherCursor, weatherValues);
+//         Get the joined Weather data for a specific date
+        weatherCursor = mContext.getContentResolver().query(
+                WeatherEntry.buildWeatherLocationWithDate(TestUtilities.TEST_LOCATION, TestUtilities.TEST_DATE),
+                null,
+                null,
+                null,
+                null
+        );
+        TestUtilities.validateCursor("testInsertReadProvider.  Error validating joined Weather and Location data for a specific date.",
+                weatherCursor, weatherValues);
     }
 
     // Make sure we can still delete after adding/updating stuff

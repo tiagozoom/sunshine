@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
+import java.util.regex.Matcher;
+
 public class WeatherProvider extends ContentProvider {
 
     // The URI Matcher used by this content provider.
@@ -216,17 +218,19 @@ public class WeatherProvider extends ContentProvider {
                 break;
             }
             case LOCATION: {
-                long _id = db.insert(WeatherContract.LocationEntry.TABLE_NAME, null, values);
-                if ( _id > 0 )
+               long _id = db.insert(WeatherContract.LocationEntry.TABLE_NAME,null,values);
+                if(_id > 0){
                     returnUri = WeatherContract.LocationEntry.buildLocationUri(_id);
-                else
+                }else{
                     throw new android.database.SQLException("Failed to insert row into " + uri);
+                }
                 break;
             }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         getContext().getContentResolver().notifyChange(uri, null);
+        db.close();
         return returnUri;
     }
 
@@ -234,26 +238,50 @@ public class WeatherProvider extends ContentProvider {
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
-        int rowsDeleted;
-        // this makes delete all rows return the number of rows deleted
-        if ( null == selection ) selection = "1";
+        int rowsDeleted = 0;
+
         switch (match) {
             case WEATHER:
-                rowsDeleted = db.delete(
-                        WeatherContract.WeatherEntry.TABLE_NAME, selection, selectionArgs);
+                rowsDeleted = db.delete(WeatherContract.WeatherEntry.TABLE_NAME,selection,selectionArgs);
                 break;
             case LOCATION:
-                rowsDeleted = db.delete(
-                        WeatherContract.LocationEntry.TABLE_NAME, selection, selectionArgs);
+                rowsDeleted = db.delete(WeatherContract.LocationEntry.TABLE_NAME,selection,selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
-        // Because a null deletes all rows
-        if (rowsDeleted != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+
+        if(rowsDeleted != 0){
+            getContext().getContentResolver().notifyChange(uri,null);
         }
+
         return rowsDeleted;
+    }
+
+    @Override
+    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final int match = sUriMatcher.match(uri);
+        int rowsUpdated = 0;
+
+        switch (match){
+            case WEATHER:{
+                normalizeDate(values);
+                rowsUpdated = db.update(WeatherContract.WeatherEntry.TABLE_NAME,values,selection,selectionArgs);
+                break;
+            }
+            case LOCATION:{
+                rowsUpdated = db.update(WeatherContract.LocationEntry.TABLE_NAME,values,selection,selectionArgs);
+                break;
+            }
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        if(rowsUpdated != 0){
+            getContext().getContentResolver().notifyChange(uri,null);
+        }
+
+        return rowsUpdated;
     }
 
     private void normalizeDate(ContentValues values) {
@@ -264,31 +292,6 @@ public class WeatherProvider extends ContentProvider {
         }
     }
 
-    @Override
-    public int update(
-            Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        final int match = sUriMatcher.match(uri);
-        int rowsUpdated;
-
-        switch (match) {
-            case WEATHER:
-                normalizeDate(values);
-                rowsUpdated = db.update(WeatherContract.WeatherEntry.TABLE_NAME, values, selection,
-                        selectionArgs);
-                break;
-            case LOCATION:
-                rowsUpdated = db.update(WeatherContract.LocationEntry.TABLE_NAME, values, selection,
-                        selectionArgs);
-                break;
-            default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
-        }
-        if (rowsUpdated != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
-        }
-        return rowsUpdated;
-    }
 
     @Override
     public int bulkInsert(Uri uri, ContentValues[] values) {

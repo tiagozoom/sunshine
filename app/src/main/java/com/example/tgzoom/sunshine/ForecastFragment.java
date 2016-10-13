@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -112,10 +114,8 @@ public class ForecastFragment extends Fragment {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     public void getForecast(){
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String location = sharedPreferences.getString(getString(R.string.pref_location_key),getString(R.string.pref_location_default_value));
-        String units = sharedPreferences.getString(getString(R.string.pref_units_key),getString(R.string.pref_units_default_value));
-        new ForecastAsyncTask(this.forecastArrayAdapter,location,units).execute();
+        new ForecastAsyncTask(this,forecastArrayAdapter).execute();
     }
 }

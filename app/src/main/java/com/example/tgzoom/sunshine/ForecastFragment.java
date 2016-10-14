@@ -1,6 +1,5 @@
 package com.example.tgzoom.sunshine;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -9,7 +8,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,12 +18,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-
-import java.net.URI;
-import java.net.URISyntaxException;
+import com.facebook.stetho.Stetho;
 import java.util.ArrayList;
-import java.util.Arrays;
-
 
 public class ForecastFragment extends Fragment {
     private ArrayAdapter forecastArrayAdapter   = null;
@@ -34,6 +28,11 @@ public class ForecastFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        Stetho.initialize(
+                Stetho.newInitializerBuilder(getContext())
+                        .enableDumpapp(Stetho.defaultDumperPluginsProvider(getContext()))
+                        .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(getContext()))
+                        .build());
     }
 
     @Override
@@ -60,10 +59,11 @@ public class ForecastFragment extends Fragment {
         return rootView;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override
     public void onStart() {
         super.onStart();
-        getForecast();;
+        getForecast();
     }
 
     @Override
@@ -116,6 +116,6 @@ public class ForecastFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     public void getForecast(){
-        new ForecastAsyncTask(this,forecastArrayAdapter).execute();
+        new ForecastAsyncTask(getContext(),forecastArrayAdapter).execute();
     }
 }

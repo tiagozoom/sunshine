@@ -227,9 +227,10 @@ public class ForecastAsyncTask extends AsyncTask<Void,ArrayList<String>,ArrayLis
                 );
             }
 
+            String order = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC ";
             Cursor cursor = context.getContentResolver().query(
                     WeatherContract.WeatherEntry.CONTENT_URI,
-                    null,null,null,null
+                    null,null,null,order
             );
 
             contentValuesArrayList = new ArrayList<ContentValues>();
@@ -241,7 +242,6 @@ public class ForecastAsyncTask extends AsyncTask<Void,ArrayList<String>,ArrayLis
                     contentValuesArrayList.add(contentValues);
                 }while (cursor.moveToNext());
             }
-
 
             for (ContentValues contentValues:contentValuesArrayList) {
                 String highAndLow = formatHighLows(

@@ -288,7 +288,7 @@ public class WeatherProvider extends ContentProvider {
         // normalize the date value
         if (values.containsKey(WeatherContract.WeatherEntry.COLUMN_DATE)) {
             long dateValue = values.getAsLong(WeatherContract.WeatherEntry.COLUMN_DATE);
-            values.put(WeatherContract.WeatherEntry.COLUMN_DATE, WeatherContract.normalizeDate(dateValue));
+//            values.put(WeatherContract.WeatherEntry.COLUMN_DATE, WeatherContract.normalizeDate(dateValue));
         }
     }
 

@@ -194,7 +194,7 @@ public class ForecastAsyncTask extends AsyncTask<Void,ArrayList<String>,ArrayLis
                 Double min_temperature  = getMinTemperature(listObject.getJSONObject(TEMPERATURE));
                 Double pressure         = listObject.getDouble(PRESSURE);
                 Double speed            = listObject.getDouble(WIND_SPEED);
-                long dateTime           = listObject.getLong(DAY) * 1000;
+                String dateTime         = listObject.getString(DAY);
                 int humidity            = listObject.getInt(HUMIDITY);
                 int deg                 = listObject.getInt(DEGREES);
 
@@ -249,8 +249,10 @@ public class ForecastAsyncTask extends AsyncTask<Void,ArrayList<String>,ArrayLis
                         contentValues.getAsDouble(WeatherContract.WeatherEntry.COLUMN_MIN_TEMP)
                 );
 
+                long time = contentValues.getAsLong(WeatherContract.WeatherEntry.COLUMN_DATE) * 1000;
+
                 forecastStringArray.add(
-                        getReadableDateString(contentValues.getAsLong(WeatherContract.WeatherEntry.COLUMN_DATE)) +
+                        getReadableDateString(time) +
                         " - " + contentValues.getAsString(WeatherContract.WeatherEntry.COLUMN_SHORT_DESC) +
                         " - " + highAndLow
                 );

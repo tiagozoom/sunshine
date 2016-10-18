@@ -29,4 +29,7 @@
     <string name="pref_location_key">pref_location</string>
     <string name="preferred_location">Location</string>
     <string name="pref_units_metric">metric</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

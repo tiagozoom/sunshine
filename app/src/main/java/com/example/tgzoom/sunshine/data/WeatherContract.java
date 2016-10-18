@@ -108,8 +108,8 @@ public class WeatherContract {
             return CONTENT_URI.buildUpon().appendPath(location).appendPath(Long.toString(normalizeDate(date))).build();
         }
 
-        public static Uri buildWeatherLocationWithStartDate(String location, long testDate) {
-            return CONTENT_URI.buildUpon().appendPath(location).appendQueryParameter(COLUMN_DATE,String.valueOf(normalizeDate(testDate))).build();
+        public static Uri buildWeatherLocationWithStartDate(String location, long date) {
+            return CONTENT_URI.buildUpon().appendPath(location).appendQueryParameter(COLUMN_DATE,String.valueOf(normalizeDate(date))).build();
         }
     }
 }

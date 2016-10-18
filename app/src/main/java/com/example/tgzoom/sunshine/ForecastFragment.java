@@ -2,6 +2,7 @@ package com.example.tgzoom.sunshine;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,11 +19,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.example.tgzoom.sunshine.data.WeatherContract;
+import com.example.tgzoom.sunshine.data.WeatherProvider;
 import com.facebook.stetho.Stetho;
 import java.util.ArrayList;
 
 public class ForecastFragment extends Fragment {
-    private ArrayAdapter forecastArrayAdapter   = null;
+    private ForecastAdapter forecastAdapter   = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,28 +46,34 @@ public class ForecastFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView =  inflater.inflate(R.layout.fragment_forecast, container, false);
 
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String location = sharedPreferences.getString(getContext().getString(R.string.pref_location_key),getContext().getString(R.string.pref_location_default_value));
+        String sort = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC ";
+        Uri weatherUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(location,System.currentTimeMillis());
+
+        Cursor cursor = getActivity().getContentResolver().query(
+                weatherUri,
+                null,
+                null,
+                null,
+                sort
+        );
+
         ListView listViewForecast = (ListView) rootView.findViewById(R.id.listview_forecast);
-        forecastArrayAdapter = new ArrayAdapter(getContext(),R.layout.list_item_forecast,new ArrayList<String>());
-        listViewForecast.setAdapter(forecastArrayAdapter);
+        forecastAdapter = new ForecastAdapter(getActivity(),cursor,0);
+        listViewForecast.setAdapter(forecastAdapter);
 
         listViewForecast.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent forecast_intent = new Intent(getActivity(),DetailActivity.class);
                 forecast_intent.setAction(Intent.ACTION_VIEW);
-                String forecast = forecastArrayAdapter.getItem(position).toString();
+                String forecast = forecastAdapter.getItem(position).toString();
                 forecast_intent.putExtra("forecast",forecast);
                 startActivity(forecast_intent);
             }
         });
         return rootView;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
-    @Override
-    public void onStart() {
-        super.onStart();
-        getForecast();
     }
 
     @Override
@@ -112,10 +122,5 @@ public class ForecastFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
-    public void getForecast(){
-        new ForecastAsyncTask(getContext(),forecastArrayAdapter).execute();
     }
 }

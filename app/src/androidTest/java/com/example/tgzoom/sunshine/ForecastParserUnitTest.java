@@ -18,12 +18,7 @@ import static org.junit.Assert.assertThat;
 @SmallTest
 public class ForecastParserUnitTest {
 
-    private ForecastParser forecastParser;
-
-    @Before
-    public void createLogHistory() {
-        forecastParser = new ForecastParser();
-    }
+    private ForecastAsyncTask.ForecastParser forecastParser;
 
     @Test
     public void test() throws JSONException {

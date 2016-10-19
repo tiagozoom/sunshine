@@ -85,8 +85,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public Intent createShareIntent() {
         Intent share_intent = new Intent();
         share_intent.setAction(Intent.ACTION_SEND);
-        TextView forecast_item_textview = (TextView) getActivity().findViewById(R.id.detail_forecast_item);
-        share_intent.putExtra(Intent.EXTRA_TEXT, forecast_item_textview.getText() + "#SunshineApp");
+//        TextView forecast_item_textview = (TextView) getActivity().findViewById(R.id.detail_forecast_item);
+//        share_intent.putExtra(Intent.EXTRA_TEXT, forecast_item_textview.getText() + "#SunshineApp");
         share_intent.setType("text/plain");
         return share_intent;
     }
@@ -129,11 +129,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         if(!data.moveToFirst()){
             return;
         }
-
-        TextView forecast_item_textview = (TextView) getActivity().findViewById(R.id.detail_forecast_item);
-        String desc = data.getString(DetailFragment.COL_WEATHER_DESC);
-        forecast_item_textview.setText(desc);
-
     }
 
     @Override

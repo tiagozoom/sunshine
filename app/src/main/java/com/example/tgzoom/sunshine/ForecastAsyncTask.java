@@ -23,42 +23,36 @@ import java.util.ArrayList;
  * Created by tgzoom on 9/22/16.
  */
 public class ForecastAsyncTask extends AsyncTask<Void,ArrayList<String>,ArrayList<String>> {
-    private ForecastAdapter forecastAdapter     = null;
     private Context context                     = null;
-    private String location                     = null;
-    private String units                        = null;
+    private String location;
+    private String units;
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
-    public ForecastAsyncTask(Context context, ForecastAdapter forecastAdapter) {
-        this.forecastAdapter = forecastAdapter;
+    public ForecastAsyncTask(Context context) {
         this.context = context;
     }
 
     @Override
     protected ArrayList<String> doInBackground(Void... voids) {
-//        try {
-//            NetworkRequest networkRequest = new NetworkRequest();
-//            String weatherString = networkRequest.getWeatherString(this.location);
-//            ForecastParser forecastParser = new ForecastParser(this.units);
-//            ArrayList<String> forecastArrayList = forecastParser.parseJson(weatherString);
-//            return forecastArrayList;
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            location = sharedPreferences.getString(context.getString(R.string.pref_location_key), context.getString(R.string.pref_location_default_value));
+            units    = sharedPreferences.getString(context.getString(R.string.pref_location_key), context.getString(R.string.pref_location_default_value));
+
+            NetworkRequest networkRequest = new NetworkRequest();
+            String weatherString = networkRequest.getWeatherString(location);
+            ForecastParser forecastParser = new ForecastParser(units);
+            ArrayList<String> forecastArrayList = forecastParser.parseJson(weatherString);
+            return forecastArrayList;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
     protected void onPostExecute(ArrayList<String> forecastArrayList) {
         super.onPostExecute(forecastArrayList);
-
-//        if(forecastArrayList != null) {
-//            this.forecastAdapter.clear();
-//            for (String forecastItem : forecastArrayList) {
-//                this.forecastArrayAdapter.add(forecastItem);
-//            }
-//        }
-//        this.forecastArrayAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -188,7 +182,6 @@ public class ForecastAsyncTask extends AsyncTask<Void,ArrayList<String>,ArrayLis
             daytime = new Time();
 
             for(int index=0;index<list.length();index++){
-
                 JSONObject listObject   = list.getJSONObject(index);
                 Double max_temperature  = getMaxTemperature(listObject.getJSONObject(TEMPERATURE));
                 Double min_temperature  = getMinTemperature(listObject.getJSONObject(TEMPERATURE));

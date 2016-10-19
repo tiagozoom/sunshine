@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -24,7 +26,7 @@ import com.example.tgzoom.sunshine.data.WeatherContract;
 import com.facebook.stetho.Stetho;
 
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    private ForecastAdapter forecastAdapter   = null;
+    private ForecastAdapter forecastAdapter = null;
     static final int FORECAST_LOADER_ID = 105;
 
     static final String[] FORECAST_COLUMNS = {
@@ -50,6 +52,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     static final int COL_COORD_LONG = 8;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,9 +68,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String location = sharedPreferences.getString(getContext().getString(R.string.pref_location_key),getContext().getString(R.string.pref_location_default_value));
+        String location = sharedPreferences.getString(getContext().getString(R.string.pref_location_key), getContext().getString(R.string.pref_location_default_value));
         String sort = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC ";
-        Uri weatherUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(location,System.currentTimeMillis());
+        Uri weatherUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(location, System.currentTimeMillis());
 
         return new CursorLoader(
                 getActivity(),
@@ -96,22 +99,22 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View rootView =  inflater.inflate(R.layout.fragment_forecast, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_forecast, container, false);
 
         ListView listViewForecast = (ListView) rootView.findViewById(R.id.listview_forecast);
-        forecastAdapter = new ForecastAdapter(getActivity(),null,0);
+        forecastAdapter = new ForecastAdapter(getActivity(), null, 0);
         listViewForecast.setAdapter(forecastAdapter);
-        getLoaderManager().initLoader(FORECAST_LOADER_ID,null,this);
+        getLoaderManager().initLoader(FORECAST_LOADER_ID, null, this);
 
         listViewForecast.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent forecast_intent = new Intent(getActivity(),DetailActivity.class);
+                Intent forecast_intent = new Intent(getActivity(), DetailActivity.class);
                 forecast_intent.setAction(Intent.ACTION_VIEW);
                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
-                if(cursor != null){
+                if (cursor != null) {
                     String location = Utility.getPreferredLocation(getActivity());
-                    forecast_intent.setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(location,cursor.getLong(ForecastFragment.COL_WEATHER_DATE)));
+                    forecast_intent.setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(location, cursor.getLong(ForecastFragment.COL_WEATHER_DATE)));
                     startActivity(forecast_intent);
                 }
             }
@@ -122,14 +125,15 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.forecastfragment,menu);
+        inflater.inflate(R.menu.forecastfragment, menu);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.settings:
-                Intent settings_intent = new Intent(getContext(),SettingsActivity.class);
+                Intent settings_intent = new Intent(getContext(), SettingsActivity.class);
                 settings_intent.setAction(Intent.ACTION_VIEW);
                 startActivity(settings_intent);
                 break;
@@ -142,9 +146,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         return super.onOptionsItemSelected(item);
     }
 
-    public void sendPreferredLocation(){
+    public void sendPreferredLocation() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String location = sharedPreferences.getString(getString(R.string.pref_location_key),getString(R.string.pref_location_default_value));
+        String location = sharedPreferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default_value));
 
         try {
             Intent map_intent = new Intent();
@@ -152,18 +156,29 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
             Uri geoLocation = Uri.parse("geo:0,0?")
                     .buildUpon()
-                    .appendQueryParameter("q",location)
+                    .appendQueryParameter("q", location)
                     .build();
 
             map_intent.setData(geoLocation);
 
             if (map_intent.resolveActivity(getActivity().getPackageManager()) != null) {
                 startActivity(map_intent);
-            }else{
-                Toast.makeText(getContext(),"No map class had been found.",Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "No map class had been found.", Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
+    public void updateWeather(){
+        new ForecastAsyncTask(getContext()).execute();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
+    public void onLocationChanged(){
+        updateWeather();
+        getLoaderManager().restartLoader(FORECAST_LOADER_ID,null,this);
     }
 }

@@ -37,7 +37,7 @@ public class ForecastAsyncTask extends AsyncTask<Void,ArrayList<String>,ArrayLis
         try {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
             location = sharedPreferences.getString(context.getString(R.string.pref_location_key), context.getString(R.string.pref_location_default_value));
-            units    = sharedPreferences.getString(context.getString(R.string.pref_location_key), context.getString(R.string.pref_location_default_value));
+            units    = sharedPreferences.getString(context.getString(R.string.pref_units_key), context.getString(R.string.pref_units_default_value));
 
             NetworkRequest networkRequest = new NetworkRequest();
             String weatherString = networkRequest.getWeatherString(location);
@@ -100,7 +100,7 @@ public class ForecastAsyncTask extends AsyncTask<Void,ArrayList<String>,ArrayLis
 
     public class ForecastParser {
         private ArrayList<String> forecastStringArray = new ArrayList<String>();
-        private final static String DAY         = "dt";
+
         private final static String TEMPERATURE = "temp";
 
         private final static String MAX         = "max";
@@ -119,14 +119,11 @@ public class ForecastAsyncTask extends AsyncTask<Void,ArrayList<String>,ArrayLis
         private final static String CITY_NAME   = "name";
         private final static String CITY        = "city";
         private final static String COORD       = "coord";
-        private final int milliseconds          = 1000;
+
         private String units;
 
         public ForecastParser(String units){
             this.units = units;
-        }
-
-        public ForecastParser(){
         }
 
         /* The date/time conversion code is going to be moved outside the asynctask later,

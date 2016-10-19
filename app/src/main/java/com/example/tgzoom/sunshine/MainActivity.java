@@ -14,10 +14,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        PreferenceManager.setDefaultValues(this,R.xml.pref_general,false);
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mLocation = sharedPreferences.getString(getString(R.string.pref_location_key),getString(R.string.pref_location_default_value));
+        mLocation = Utility.getPreferredLocation(this);
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override

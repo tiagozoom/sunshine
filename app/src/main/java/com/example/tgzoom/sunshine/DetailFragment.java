@@ -45,7 +45,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             WeatherContract.WeatherEntry.COLUMN_MAX_TEMP,
             WeatherContract.WeatherEntry.COLUMN_MIN_TEMP,
             WeatherContract.WeatherEntry.COLUMN_PRESSURE,
-            WeatherContract.WeatherEntry.COLUMN_PRESSURE,
             WeatherContract.WeatherEntry.COLUMN_HUMIDITY,
             WeatherContract.WeatherEntry.COLUMN_WIND_SPEED,
             WeatherContract.WeatherEntry.COLUMN_DEGREES,
@@ -146,7 +145,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         return new CursorLoader(
                 getActivity(),
                 forecast_intent.getData(),
-                ForecastFragment.FORECAST_COLUMNS,
+                DetailFragment.FORECAST_COLUMNS,
                 null,
                 null,
                 sort);
@@ -160,18 +159,30 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
         boolean isMetric = Utility.isMetric(getContext());
 
-        Double max_temp = data.getDouble(DetailFragment.COL_WEATHER_MAX_TEMP);
-        Double min_temp = data.getDouble(DetailFragment.COL_WEATHER_MIN_TEMP);
+        double max_temp = data.getDouble(DetailFragment.COL_WEATHER_MAX_TEMP);
+        double min_temp = data.getDouble(DetailFragment.COL_WEATHER_MIN_TEMP);
+        Long date = data.getLong(DetailFragment.COL_WEATHER_DATE);
+        String weather_description = data.getString(DetailFragment.COL_WEATHER_DESC);
+        double pressure = data.getDouble(DetailFragment.COLUMN_PRESSURE);
+        double humidity = data.getDouble(DetailFragment.COLUMN_HUMIDITY);
+        float wind = data.getFloat(DetailFragment.COLUMN_WIND_SPEED);
+        float degrees = data.getFloat(DetailFragment.COLUMN_DEGREES);
+
         String max_temp_string = Utility.formatTemperature(getContext(),max_temp, isMetric);
         String min_temp_string = Utility.formatTemperature(getContext(),min_temp, isMetric);
-        Long date = data.getLong(DetailFragment.COL_WEATHER_DATE);
+        String pressure_string = Utility.formatPressure(getContext(),pressure);
         String formated_date = Utility.getFriendlyDayString(getContext(), date);
-        String weather_description = data.getString(DetailFragment.COL_WEATHER_DESC);
+        String humidity_string = Utility.formatHumidity(getContext(),humidity);
+        String wind_string = Utility.getFormattedWind(getContext(),wind,degrees);
 
         dateView.setText(formated_date);
         maxTempView.setText(max_temp_string);
         minTempView.setText(min_temp_string);
         forecastView.setText(weather_description);
+        pressureView.setText(pressure_string);
+        humidityView.setText(humidity_string);
+        windView.setText(wind_string);
+
     }
 
     @Override

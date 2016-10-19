@@ -3,6 +3,7 @@ package com.example.tgzoom.sunshine;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -19,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.tgzoom.sunshine.data.WeatherContract;
@@ -27,6 +29,14 @@ import com.example.tgzoom.sunshine.data.WeatherContract;
 public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private ShareActionProvider shareActionProvider;
+    private  ImageView iconView;
+    private  TextView dateView;
+    private  TextView minTempView;
+    private  TextView maxTempView;
+    private  TextView forecastView;
+    private  TextView humidityView;
+    private  TextView pressureView;
+    private  TextView windView;
 
     static final String[] FORECAST_COLUMNS = {
             WeatherContract.WeatherEntry.TABLE_NAME + "." + WeatherContract.WeatherEntry._ID,
@@ -34,6 +44,11 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             WeatherContract.WeatherEntry.COLUMN_SHORT_DESC,
             WeatherContract.WeatherEntry.COLUMN_MAX_TEMP,
             WeatherContract.WeatherEntry.COLUMN_MIN_TEMP,
+            WeatherContract.WeatherEntry.COLUMN_PRESSURE,
+            WeatherContract.WeatherEntry.COLUMN_PRESSURE,
+            WeatherContract.WeatherEntry.COLUMN_HUMIDITY,
+            WeatherContract.WeatherEntry.COLUMN_WIND_SPEED,
+            WeatherContract.WeatherEntry.COLUMN_DEGREES,
             WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING,
             WeatherContract.WeatherEntry.COLUMN_WEATHER_ID,
             WeatherContract.LocationEntry.COLUMN_COORD_LAT,
@@ -45,10 +60,14 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     static final int COL_WEATHER_DESC = 2;
     static final int COL_WEATHER_MAX_TEMP = 3;
     static final int COL_WEATHER_MIN_TEMP = 4;
-    static final int COL_LOCATION_SETTING = 5;
-    static final int COL_WEATHER_CONDITION_ID = 6;
-    static final int COL_COORD_LAT = 7;
-    static final int COL_COORD_LONG = 8;
+    static final int COLUMN_PRESSURE = 5;
+    static final int COLUMN_HUMIDITY = 6;
+    static final int COLUMN_WIND_SPEED = 7;
+    static final int COLUMN_DEGREES = 8;
+    static final int COL_LOCATION_SETTING = 9;
+    static final int COL_WEATHER_CONDITION_ID = 10;
+    static final int COL_COORD_LAT = 11;
+    static final int COL_COORD_LONG = 12;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,6 +81,15 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         getLoaderManager().initLoader(ForecastFragment.FORECAST_LOADER_ID, null, this);
+
+        maxTempView = (TextView) rootView.findViewById(R.id.forecast_detail_high_textview);
+        minTempView = (TextView) rootView.findViewById(R.id.forecast_detail_low_textview);
+        forecastView = (TextView) rootView.findViewById(R.id.forecast_detail_forecast_textview);
+        humidityView = (TextView) rootView.findViewById(R.id.forecast_detail_humidity_textview);
+        pressureView = (TextView) rootView.findViewById(R.id.forecast_detail_pressure_textview);
+        windView = (TextView) rootView.findViewById(R.id.forecast_detail_wind_textview);
+        iconView = (ImageView) rootView.findViewById(R.id.forecast_detail_icon);
+        dateView = (TextView) rootView.findViewById(R.id.forecast_detail_date_textview);
 
         return rootView;
     }
@@ -129,6 +157,21 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         if(!data.moveToFirst()){
             return;
         }
+
+        boolean isMetric = Utility.isMetric(getContext());
+
+        Double max_temp = data.getDouble(DetailFragment.COL_WEATHER_MAX_TEMP);
+        Double min_temp = data.getDouble(DetailFragment.COL_WEATHER_MIN_TEMP);
+        String max_temp_string = Utility.formatTemperature(getContext(),max_temp, isMetric);
+        String min_temp_string = Utility.formatTemperature(getContext(),min_temp, isMetric);
+        Long date = data.getLong(DetailFragment.COL_WEATHER_DATE);
+        String formated_date = Utility.getFriendlyDayString(getContext(), date);
+        String weather_description = data.getString(DetailFragment.COL_WEATHER_DESC);
+
+        dateView.setText(formated_date);
+        maxTempView.setText(max_temp_string);
+        minTempView.setText(min_temp_string);
+        forecastView.setText(weather_description);
     }
 
     @Override

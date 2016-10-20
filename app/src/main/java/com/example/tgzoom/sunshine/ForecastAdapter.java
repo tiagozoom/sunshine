@@ -88,10 +88,20 @@ public class ForecastAdapter extends CursorAdapter {
         String formated_date = Utility.getFriendlyDayString(context, date);
         String weather_description = cursor.getString(ForecastFragment.COL_WEATHER_DESC);
 
+        int weather_id = cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID);
+        int weather_resource_id = 0;
+
+        if(getItemViewType(cursor.getPosition()) == VIEW_TYPE_TODAY) {
+            weather_resource_id = Utility.getArtResourceForWeatherCondition(weather_id);
+        }else{
+            weather_resource_id = Utility.getIconResourceForWeatherCondition(weather_id);
+        }
+
         viewHolder.dateView.setText(formated_date);
         viewHolder.maxTempView.setText(max_temp_string);
         viewHolder.minTempView.setText(min_temp_string);
         viewHolder.forecastView.setText(weather_description);
+        viewHolder.iconView.setImageResource(weather_resource_id);
     }
 
     @Override

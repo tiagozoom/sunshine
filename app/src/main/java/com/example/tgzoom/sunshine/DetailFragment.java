@@ -55,18 +55,18 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     };
 
     static final int COL_WEATHER_ID = 0;
-    static final int COL_WEATHER_DATE = 1;
-    static final int COL_WEATHER_DESC = 2;
-    static final int COL_WEATHER_MAX_TEMP = 3;
-    static final int COL_WEATHER_MIN_TEMP = 4;
+    static final int COLUMN_WEATHER_DATE = 1;
+    static final int COLUMN_WEATHER_DESC = 2;
+    static final int COLUMN_WEATHER_MAX_TEMP = 3;
+    static final int COLUMN_WEATHER_MIN_TEMP = 4;
     static final int COLUMN_PRESSURE = 5;
     static final int COLUMN_HUMIDITY = 6;
     static final int COLUMN_WIND_SPEED = 7;
     static final int COLUMN_DEGREES = 8;
-    static final int COL_LOCATION_SETTING = 9;
-    static final int COL_WEATHER_CONDITION_ID = 10;
-    static final int COL_COORD_LAT = 11;
-    static final int COL_COORD_LONG = 12;
+    static final int COLUMN_LOCATION_SETTING = 9;
+    static final int COLUMN_WEATHER_CONDITION_ID = 10;
+    static final int COLUMN_COORD_LAT = 11;
+    static final int COLUMN_COORD_LONG = 12;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -153,16 +153,17 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
         if(!data.moveToFirst()){
             return;
         }
 
         boolean isMetric = Utility.isMetric(getContext());
 
-        double max_temp = data.getDouble(DetailFragment.COL_WEATHER_MAX_TEMP);
-        double min_temp = data.getDouble(DetailFragment.COL_WEATHER_MIN_TEMP);
-        Long date = data.getLong(DetailFragment.COL_WEATHER_DATE);
-        String weather_description = data.getString(DetailFragment.COL_WEATHER_DESC);
+        double max_temp = data.getDouble(DetailFragment.COLUMN_WEATHER_MAX_TEMP);
+        double min_temp = data.getDouble(DetailFragment.COLUMN_WEATHER_MIN_TEMP);
+        Long date = data.getLong(DetailFragment.COLUMN_WEATHER_DATE);
+        String weather_description = data.getString(DetailFragment.COLUMN_WEATHER_DESC);
         double pressure = data.getDouble(DetailFragment.COLUMN_PRESSURE);
         double humidity = data.getDouble(DetailFragment.COLUMN_HUMIDITY);
         float wind = data.getFloat(DetailFragment.COLUMN_WIND_SPEED);
@@ -175,6 +176,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         String humidity_string = Utility.formatHumidity(getContext(),humidity);
         String wind_string = Utility.getFormattedWind(getContext(),wind,degrees);
 
+        int weather_id = data.getInt(DetailFragment.COLUMN_WEATHER_CONDITION_ID);
+        int weather_resource_id = Utility.getArtResourceForWeatherCondition(weather_id);
+
         dateView.setText(formated_date);
         maxTempView.setText(max_temp_string);
         minTempView.setText(min_temp_string);
@@ -182,7 +186,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         pressureView.setText(pressure_string);
         humidityView.setText(humidity_string);
         windView.setText(wind_string);
-
+        iconView.setImageResource(weather_resource_id);
     }
 
     @Override

@@ -9,14 +9,26 @@ import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
     private String mLocation;
+    private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mLocation = Utility.getPreferredLocation(this);
-    }
+        if(savedInstanceState != null){
+            mLocation = Utility.getPreferredLocation(this);
+        }
 
+        if(findViewById(R.id.weather_detail_container) != null){
+            mTwoPane = true;
+
+            if(savedInstanceState == null){
+                getSupportFragmentManager().beginTransaction().replace(R.id.weather_detail_container,new DetailFragment()).commit();
+            }else{
+                mTwoPane = false;
+            }
+        }
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override

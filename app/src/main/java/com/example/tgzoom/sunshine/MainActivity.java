@@ -10,6 +10,7 @@ import android.os.Bundle;
 public class MainActivity extends AppCompatActivity {
     private String mLocation;
     private boolean mTwoPane;
+    static final String DETAILFRAGMENT_TAG = "detail_fragment_tag";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,10 +24,10 @@ public class MainActivity extends AppCompatActivity {
             mTwoPane = true;
 
             if(savedInstanceState == null){
-                getSupportFragmentManager().beginTransaction().replace(R.id.weather_detail_container,new DetailFragment()).commit();
-            }else{
-                mTwoPane = false;
+                getSupportFragmentManager().beginTransaction().replace(R.id.weather_detail_container,new DetailFragment(),DETAILFRAGMENT_TAG).commit();
             }
+        } else{
+            mTwoPane = false;
         }
     }
 
@@ -34,11 +35,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ForecastFragment forecastFragment = (ForecastFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.forecast_fragment_tag));
         String currentLocation = Utility.getPreferredLocation(this);
-        if(currentLocation != mLocation){
+        if(currentLocation != null && !currentLocation.equals(mLocation)){
+            ForecastFragment forecastFragment = (ForecastFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
+            if (forecastFragment != null) {
+                forecastFragment.onLocationChanged();
+            }
+            DetailFragment detailFragment = (DetailFragment) getSupportFragmentManager().findFragmentByTag(DETAILFRAGMENT_TAG);
+            if(detailFragment != null){
+                detailFragment.onLocationChanged(currentLocation);
+            }
+
             mLocation = currentLocation;
-            forecastFragment.onLocationChanged();
         }
     }
 }

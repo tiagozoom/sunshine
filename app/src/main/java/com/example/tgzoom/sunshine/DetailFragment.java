@@ -1,19 +1,15 @@
 package com.example.tgzoom.sunshine;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,6 +33,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private  TextView humidityView;
     private  TextView pressureView;
     private  TextView windView;
+    private  Uri mUri;
+    static final int DETAIL_LOADER = 111;
 
     static final String[] FORECAST_COLUMNS = {
             WeatherContract.WeatherEntry.TABLE_NAME + "." + WeatherContract.WeatherEntry._ID,
@@ -54,7 +52,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             WeatherContract.LocationEntry.COLUMN_COORD_LONG
     };
 
-    static final int COL_WEATHER_ID = 0;
+    static final int COLUMN_WEATHER_ID = 0;
     static final int COLUMN_WEATHER_DATE = 1;
     static final int COLUMN_WEATHER_DESC = 2;
     static final int COLUMN_WEATHER_MAX_TEMP = 3;
@@ -74,12 +72,14 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         setHasOptionsMenu(true);
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-        getLoaderManager().initLoader(ForecastFragment.FORECAST_LOADER_ID, null, this);
+        getLoaderManager().initLoader(DetailFragment.DETAIL_LOADER, null, this);
 
         maxTempView = (TextView) rootView.findViewById(R.id.forecast_detail_high_textview);
         minTempView = (TextView) rootView.findViewById(R.id.forecast_detail_low_textview);
@@ -136,7 +136,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Intent forecast_intent = getActivity().getIntent();
-        if(forecast_intent == null){
+        if(forecast_intent == null || forecast_intent.getData() == null){
             return null;
         }
 
@@ -177,7 +177,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         String wind_string = Utility.getFormattedWind(getContext(),wind,degrees);
 
         int weather_id = data.getInt(DetailFragment.COLUMN_WEATHER_CONDITION_ID);
-        int weather_resource_id = Utility.getArtResourceForWeatherCondition(weather_id);
+
+        int weather_resource_id = Utility.getIconResourceForWeatherCondition(weather_id);
 
         dateView.setText(formated_date);
         maxTempView.setText(max_temp_string);
@@ -187,10 +188,22 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         humidityView.setText(humidity_string);
         windView.setText(wind_string);
         iconView.setImageResource(weather_resource_id);
+
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    void onLocationChanged( String newLocation ) {
+        // replace the uri, since the location has changed
+        Uri uri = mUri;
+        if (null != uri) {
+            long date = WeatherContract.WeatherEntry.getDateFromUri(uri);
+            Uri updatedUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(newLocation, date);
+            mUri = updatedUri;
+            getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
+        }
     }
 }

@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -114,11 +115,13 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
                 if (cursor != null) {
                     String location = Utility.getPreferredLocation(getActivity());
-                    forecast_intent.setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(location, cursor.getLong(ForecastFragment.COL_WEATHER_DATE)));
-                    startActivity(forecast_intent);
+                    long date = cursor.getLong(ForecastFragment.COL_WEATHER_DATE);
+//                    forecast_intent.setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(location, ));
+//                    startActivity(forecast_intent);
                 }
             }
         });
+
         return rootView;
     }
 
@@ -172,13 +175,13 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
-    public void updateWeather(){
+    public void updateWeather() {
         new ForecastAsyncTask(getContext()).execute();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
-    public void onLocationChanged(){
+    public void onLocationChanged() {
         updateWeather();
-        getLoaderManager().restartLoader(FORECAST_LOADER_ID,null,this);
+        getLoaderManager().restartLoader(FORECAST_LOADER_ID, null, this);
     }
 }

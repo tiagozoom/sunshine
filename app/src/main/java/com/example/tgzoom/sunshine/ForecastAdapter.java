@@ -23,6 +23,7 @@ import com.example.tgzoom.sunshine.data.WeatherContract;
 public class ForecastAdapter extends CursorAdapter {
     private static final int VIEW_TYPE_TODAY = 0;
     private static final int VIEW_TYPE_FUTURE_DAY = 1;
+    private boolean useTodayLayout;
 
     public ForecastAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
@@ -104,9 +105,13 @@ public class ForecastAdapter extends CursorAdapter {
         viewHolder.iconView.setImageResource(weather_resource_id);
     }
 
+    public void setUseTodayLayout(boolean useTodayLayout){
+        this.useTodayLayout = useTodayLayout;
+    }
+
     @Override
     public int getItemViewType(int position) {
-        return (position == 0) ? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE_DAY;
+        return (position == 0 && useTodayLayout) ? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE_DAY;
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.example.tgzoom.sunshine;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,5 +43,11 @@ public class SettingsActivity extends AppCompatActivity {
             }
             mLocation = location;
         }
+    }
+
+    @Nullable
+    @Override
+    public Intent getSupportParentActivityIntent() {
+        return super.getSupportParentActivityIntent().addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     }
 }

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
@@ -28,7 +29,11 @@ import com.facebook.stetho.Stetho;
 
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private ForecastAdapter forecastAdapter = null;
+    private ListView listViewForecast;
+    private int visiblePosition;
+    private boolean useTodayLayout = false;
     static final int FORECAST_LOADER_ID = 105;
+    static final String LISTVIEW_VISIBLE_POSITION = "listview_visible_position";
 
     static final String[] FORECAST_COLUMNS = {
             WeatherContract.WeatherEntry.TABLE_NAME + "." + WeatherContract.WeatherEntry._ID,
@@ -65,6 +70,19 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                         .build());
     }
 
+    public void setUseTodayLayout(boolean useTodayLayout){
+        if(forecastAdapter != null){
+            forecastAdapter.setUseTodayLayout(useTodayLayout);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if(visiblePosition != ListView.INVALID_POSITION){
+            outState.putInt(LISTVIEW_VISIBLE_POSITION,visiblePosition);
+        }
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -87,6 +105,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         // Swap the new cursor in.  (The framework will take care of closing the
         // old cursor once we return.)
         forecastAdapter.swapCursor(data);
+        listViewForecast.smoothScrollToPosition(visiblePosition);
     }
 
     @Override
@@ -100,11 +119,13 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_forecast, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_forecast, container, false);
 
-        ListView listViewForecast = (ListView) rootView.findViewById(R.id.listview_forecast);
+
+        listViewForecast = (ListView) rootView.findViewById(R.id.listview_forecast);
         forecastAdapter = new ForecastAdapter(getActivity(), null, 0);
         listViewForecast.setAdapter(forecastAdapter);
+        forecastAdapter.setUseTodayLayout(useTodayLayout);
         getLoaderManager().initLoader(FORECAST_LOADER_ID, null, this);
 
         listViewForecast.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -113,14 +134,18 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 Intent forecast_intent = new Intent(getActivity(), DetailActivity.class);
                 forecast_intent.setAction(Intent.ACTION_VIEW);
                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
+                visiblePosition = position;
                 if (cursor != null) {
                     String location = Utility.getPreferredLocation(getActivity());
                     long date = cursor.getLong(ForecastFragment.COL_WEATHER_DATE);
-//                    forecast_intent.setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(location, ));
-//                    startActivity(forecast_intent);
+                    ((Callback) getActivity()).onItemSelected(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(location,date));
                 }
             }
         });
+
+        if(savedInstanceState != null && savedInstanceState.containsKey(LISTVIEW_VISIBLE_POSITION)){
+            visiblePosition = savedInstanceState.getInt(LISTVIEW_VISIBLE_POSITION);
+        }
 
         return rootView;
     }
@@ -183,5 +208,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public void onLocationChanged() {
         updateWeather();
         getLoaderManager().restartLoader(FORECAST_LOADER_ID, null, this);
+    }
+
+    public interface Callback{
+        public void onItemSelected(Uri dateUri);
     }
 }

@@ -1,13 +1,16 @@
 package com.example.tgzoom.sunshine;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ForecastFragment.Callback {
     private String mLocation;
     private boolean mTwoPane;
     static final String DETAILFRAGMENT_TAG = "detail_fragment_tag";
@@ -29,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
         } else{
             mTwoPane = false;
         }
+
+        ForecastFragment forecastFragment = ((ForecastFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_forecast));
+        forecastFragment.setUseTodayLayout(!mTwoPane);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
@@ -45,8 +51,23 @@ public class MainActivity extends AppCompatActivity {
             if(detailFragment != null){
                 detailFragment.onLocationChanged(currentLocation);
             }
-
             mLocation = currentLocation;
+        }
+    }
+
+    @Override
+    public void onItemSelected(Uri dateUri) {
+        if(mTwoPane){
+            Bundle arguments = new Bundle();
+            arguments.putParcelable(DetailFragment.DETAIL_URI,dateUri);
+            DetailFragment fragment = new DetailFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction().replace(R.id.weather_detail_container,fragment,DETAILFRAGMENT_TAG).commit();
+        }else{
+            Intent intent = new Intent(this,DetailActivity.class);
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setData(dateUri);
+            startActivity(intent);
         }
     }
 }

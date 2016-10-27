@@ -1,60 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/forecast_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:padding="@dimen/activity_horizontal_margin"
     android:minHeight="?android:attr/listPreferredItemHeight"
-    android:id="@+id/forecast_item"
+    android:orientation="horizontal"
+    android:background="@drawable/touch_selector"
+    android:padding="@dimen/activity_horizontal_margin"
 
     >
+
     <ImageView
+        android:id="@+id/list_item_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/activity_horizontal_margin"
         android:gravity="center_vertical"
-        android:id="@+id/list_item_icon"
-        >
-    </ImageView>
+        android:padding="@dimen/activity_horizontal_margin"/>
+
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_weight="1"
-        >
+        android:orientation="vertical">
+
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
             android:id="@+id/list_item_date_textview"
-            />
-        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
+            android:gravity="center_vertical" />
+
+        <TextView
             android:id="@+id/list_item_forecast_textview"
-            />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
             android:id="@+id/list_item_high_textview"
-            />
-        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
+            android:gravity="center_vertical" />
+
+        <TextView
             android:id="@+id/list_item_low_textview"
-            />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical" />
     </LinearLayout>
 </LinearLayout>

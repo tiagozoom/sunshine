@@ -10,6 +10,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,6 +36,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private  TextView windView;
     private  Uri mUri;
     static final int DETAIL_LOADER = 111;
+    static final String DETAIL_URI = "detail_uri";
 
     static final String[] FORECAST_COLUMNS = {
             WeatherContract.WeatherEntry.TABLE_NAME + "." + WeatherContract.WeatherEntry._ID,
@@ -72,13 +74,23 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         setHasOptionsMenu(true);
     }
 
-
+    public static DetailFragment newInstance(Uri dateUri){
+        DetailFragment detailFragment = new DetailFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(DetailFragment.DETAIL_URI,dateUri);
+        detailFragment.setArguments(args);
+        return detailFragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        Bundle arguments = getArguments();
+        if(arguments != null){
+            mUri = arguments.getParcelable(DetailFragment.DETAIL_URI);
+        }
         getLoaderManager().initLoader(DetailFragment.DETAIL_LOADER, null, this);
 
         maxTempView = (TextView) rootView.findViewById(R.id.forecast_detail_high_textview);
@@ -135,20 +147,20 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Intent forecast_intent = getActivity().getIntent();
-        if(forecast_intent == null || forecast_intent.getData() == null){
-            return null;
-        }
-
         String sort = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
 
-        return new CursorLoader(
-                getActivity(),
-                forecast_intent.getData(),
-                DetailFragment.FORECAST_COLUMNS,
-                null,
-                null,
-                sort);
+        if(mUri != null) {
+
+            return new CursorLoader(
+                    getActivity(),
+                    mUri,
+                    DetailFragment.FORECAST_COLUMNS,
+                    null,
+                    null,
+                    sort);
+        }
+
+        return null;
     }
 
     @Override

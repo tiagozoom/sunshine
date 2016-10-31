@@ -7,8 +7,7 @@
     android:background="@drawable/touch_selector"
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
-    android:orientation="horizontal"
-    android:padding="@dimen/activity_horizontal_margin">
+    android:orientation="horizontal">
 
     <FrameLayout
         android:layout_width="60dp"
@@ -16,6 +15,7 @@
 
         <ImageView
             android:id="@+id/list_item_icon"
+            android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </FrameLayout>

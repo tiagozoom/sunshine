@@ -34,6 +34,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private  TextView humidityView;
     private  TextView pressureView;
     private  TextView windView;
+    private  TextView dayView;
+
     private  Uri mUri;
     static final int DETAIL_LOADER = 111;
     static final String DETAIL_URI = "detail_uri";
@@ -101,6 +103,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         windView = (TextView) rootView.findViewById(R.id.forecast_detail_wind_textview);
         iconView = (ImageView) rootView.findViewById(R.id.forecast_detail_icon);
         dateView = (TextView) rootView.findViewById(R.id.forecast_detail_date_textview);
+        dayView = (TextView) rootView.findViewById(R.id.forecast_detail_day_textview);
 
         return rootView;
     }
@@ -184,15 +187,17 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         String max_temp_string = Utility.formatTemperature(getContext(),max_temp, isMetric);
         String min_temp_string = Utility.formatTemperature(getContext(),min_temp, isMetric);
         String pressure_string = Utility.formatPressure(getContext(),pressure);
-        String formated_date = Utility.getFriendlyDayString(getContext(), date);
+        String friendlyDateText = Utility.getDayName(getActivity(), date);
+        String dateText = Utility.getFormattedMonthDay(getActivity(), date);
         String humidity_string = Utility.formatHumidity(getContext(),humidity);
         String wind_string = Utility.getFormattedWind(getContext(),wind,degrees);
 
         int weather_id = data.getInt(DetailFragment.COLUMN_WEATHER_CONDITION_ID);
 
-        int weather_resource_id = Utility.getIconResourceForWeatherCondition(weather_id);
+        int weather_resource_id = Utility.getArtResourceForWeatherCondition(weather_id);
 
-        dateView.setText(formated_date);
+        dateView.setText(dateText);
+        dayView.setText(friendlyDateText);
         maxTempView.setText(max_temp_string);
         minTempView.setText(min_temp_string);
         forecastView.setText(weather_description);

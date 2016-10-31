@@ -4,8 +4,6 @@
     android:id="@+id/fragment_forecast"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-    android:layout_marginRight="@dimen/activity_horizontal_margin"
     android:name="com.example.tgzoom.sunshine.ForecastFragment"
     android:tag="@string/forecast_fragment_tag"
     tools:layout="@android:layout/list_content"

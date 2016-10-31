@@ -18,7 +18,6 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-
             <TextView
                 android:id="@+id/forecast_detail_date_textview"
                 android:layout_width="match_parent"

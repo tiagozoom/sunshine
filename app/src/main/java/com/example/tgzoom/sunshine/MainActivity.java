@@ -1,14 +1,11 @@
 package com.example.tgzoom.sunshine;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 
 public class MainActivity extends AppCompatActivity implements ForecastFragment.Callback {
     private String mLocation;
@@ -31,7 +28,12 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
             }
         } else{
             mTwoPane = false;
+            getSupportActionBar().setElevation(0f);
         }
+
+        getSupportActionBar().setLogo(R.drawable.ic_logo);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         ForecastFragment forecastFragment = ((ForecastFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_forecast));
         forecastFragment.setUseTodayLayout(!mTwoPane);

@@ -205,7 +205,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         humidityView.setText(humidity_string);
         windView.setText(wind_string);
         iconView.setImageResource(weather_resource_id);
-
+        int iconDescriptionStringResource = Utility.getArtResourceDescriptionForWeatherCondition(weather_id);
+        iconView.setContentDescription(getString(iconDescriptionStringResource));
     }
 
     @Override

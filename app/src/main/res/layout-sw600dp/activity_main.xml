@@ -10,7 +10,7 @@
 
     <fragment
         android:layout_height="match_parent"
-        android:layout_weight="2"
+        android:layout_weight="1"
         android:layout_width="0dp"
         android:id="@+id/fragment_forecast"
         android:tag="@string/forecast_fragment_tag"
@@ -20,7 +20,7 @@
 
     <FrameLayout
         android:id="@+id/weather_detail_container"
-        android:layout_weight="2"
+        android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"></FrameLayout>
 

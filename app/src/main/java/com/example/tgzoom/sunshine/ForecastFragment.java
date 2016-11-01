@@ -6,14 +6,12 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +23,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.tgzoom.sunshine.data.WeatherContract;
+import com.example.tgzoom.sunshine.service.SunshineService;
 import com.facebook.stetho.Stetho;
 
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -201,7 +200,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     public void updateWeather() {
-        new ForecastAsyncTask(getContext()).execute();
+//        new ForecastAsyncTask(getContext()).execute();
+        Intent intentService = new Intent(getActivity(),SunshineService.class);
+        intentService.putExtra(SunshineService.LOCATION_QUERY_EXTRA,Utility.getPreferredLocation(getContext()));
+        getActivity().startService(intentService);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
@@ -211,6 +213,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     public interface Callback{
-        public void onItemSelected(Uri dateUri);
+        void onItemSelected(Uri dateUri);
     }
 }

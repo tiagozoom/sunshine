@@ -41,7 +41,7 @@ public class ForecastAsyncTask extends AsyncTask<Void,ArrayList<String>,ArrayLis
 
             NetworkRequest networkRequest = new NetworkRequest();
             String weatherString = networkRequest.getWeatherString(location);
-            ForecastParser forecastParser = new ForecastParser(units);
+            ForecastParser forecastParser = new ForecastParser();
             ArrayList<String> forecastArrayList = forecastParser.parseJson(weatherString);
             return forecastArrayList;
         } catch (JSONException e) {
@@ -120,11 +120,6 @@ public class ForecastAsyncTask extends AsyncTask<Void,ArrayList<String>,ArrayLis
         private final static String CITY        = "city";
         private final static String COORD       = "coord";
 
-        private String units;
-
-        public ForecastParser(String units){
-            this.units = units;
-        }
 
         /* The date/time conversion code is going to be moved outside the asynctask later,
             * so for convenience we're breaking it out into its own method now.
@@ -134,22 +129,6 @@ public class ForecastAsyncTask extends AsyncTask<Void,ArrayList<String>,ArrayLis
             return shortenedDateFormat.format(time);
         }
 
-        /**
-         * Prepare the weather high/lows for presentation.
-         */
-        private String formatHighLows(double high, double low) {
-
-            if(this.units.equals("imperial")){
-                high = (high * 1.8) + 32;
-                low  = (low * 1.8) + 32;
-            }
-            // For presentation, assume the user doesn't care about tenths of a degree.
-            long roundedHigh = Math.round(high);
-            long roundedLow = Math.round(low);
-
-            String highLowStr = roundedHigh + "/" + roundedLow;
-            return highLowStr;
-        }
 
         private Double getMaxTemperature(JSONObject temp) throws JSONException {
             Double max_temperature = temp.getDouble(MAX);
@@ -231,21 +210,6 @@ public class ForecastAsyncTask extends AsyncTask<Void,ArrayList<String>,ArrayLis
                     DatabaseUtils.cursorRowToContentValues(cursor,contentValues);
                     contentValuesArrayList.add(contentValues);
                 }while (cursor.moveToNext());
-            }
-
-            for (ContentValues contentValues:contentValuesArrayList) {
-                String highAndLow = formatHighLows(
-                        contentValues.getAsDouble(WeatherContract.WeatherEntry.COLUMN_MAX_TEMP),
-                        contentValues.getAsDouble(WeatherContract.WeatherEntry.COLUMN_MIN_TEMP)
-                );
-
-                long time = contentValues.getAsLong(WeatherContract.WeatherEntry.COLUMN_DATE);
-
-                forecastStringArray.add(
-                        getReadableDateString(time) +
-                        " - " + contentValues.getAsString(WeatherContract.WeatherEntry.COLUMN_SHORT_DESC) +
-                        " - " + highAndLow
-                );
             }
 
             return forecastStringArray;

@@ -54,4 +54,14 @@
     <string name="format_wind_kmh">Wind: <xliff:g id="speed">%1$1.0f</xliff:g> km/h <xliff:g id="direction">%2$s</xliff:g></string>
     <string name="detail_activity_label">Details</string>
     <string name="settings_activity_label">Settings</string>
+
+    <!-- Art Image Icon Descriptions -->
+    <string name="art_storm_description">Storm weather Icon</string>
+    <string name="art_light_rain_description">Light rain weather Icon</string>
+    <string name="art_rain_description">Rain weather Icon</string>
+    <string name="art_snow_description">Snow weather Icon</string>
+    <string name="art_fog_description">Fog weather Icon</string>
+    <string name="art_clear_description">Clear weather Icon</string>
+    <string name="art_light_clouds_description">Light Clouds weather Icon</string>
+    <string name="art_clouds_description">Clouds weather Icon</string>
 </resources>

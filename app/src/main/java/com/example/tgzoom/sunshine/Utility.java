@@ -228,4 +228,39 @@ public class Utility {
         }
         return -1;
     }
+
+    /**
+     * Helper method to provide the art resource id according to the weather condition id returned
+     * by the OpenWeatherMap call.
+     * @param weatherId from OpenWeatherMap API response
+     * @return resource id for the corresponding image. -1 if no relation is found.
+     */
+    public static int getArtResourceDescriptionForWeatherCondition(int weatherId) {
+        // Based on weather code data found at:
+        // http://bugs.openweathermap.org/projects/api/wiki/Weather_Condition_Codes
+        if (weatherId >= 200 && weatherId <= 232) {
+            return R.string.art_storm_description;
+        } else if (weatherId >= 300 && weatherId <= 321) {
+            return R.string.art_light_rain_description;
+        } else if (weatherId >= 500 && weatherId <= 504) {
+            return R.string.art_rain_description;
+        } else if (weatherId == 511) {
+            return R.string.art_snow_description;
+        } else if (weatherId >= 520 && weatherId <= 531) {
+            return R.string.art_rain_description;
+        } else if (weatherId >= 600 && weatherId <= 622) {
+            return R.string.art_snow_description;
+        } else if (weatherId >= 701 && weatherId <= 761) {
+            return R.string.art_fog_description;
+        } else if (weatherId == 761 || weatherId == 781) {
+            return R.string.art_storm_description;
+        } else if (weatherId == 800) {
+            return R.string.art_clear_description;
+        } else if (weatherId == 801) {
+            return R.string.art_light_clouds_description;
+        } else if (weatherId >= 802 && weatherId <= 804) {
+            return R.string.art_clouds_description;
+        }
+        return -1;
+    }
 }

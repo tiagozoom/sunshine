@@ -165,10 +165,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 startActivity(settings_intent);
                 break;
             case R.id.preferred_location:
-                sendPreferredLocation();
-                break;
-            case R.id.refresh:
-                updateWeather();
+                openPreferredLocationInMap();
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -176,28 +173,25 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         return super.onOptionsItemSelected(item);
     }
 
-    public void sendPreferredLocation() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String location = sharedPreferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default_value));
+    public void openPreferredLocationInMap(){
+        Cursor cursor = forecastAdapter.getCursor();
 
-        try {
-            Intent map_intent = new Intent();
-            map_intent.setAction(Intent.ACTION_VIEW);
+        if(!cursor.moveToFirst()){
+            return;
+        }
 
-            Uri geoLocation = Uri.parse("geo:0,0?")
-                    .buildUpon()
-                    .appendQueryParameter("q", location)
-                    .build();
+        Double lat = cursor.getDouble(ForecastFragment.COL_COORD_LAT);
+        Double lon = cursor.getDouble(ForecastFragment.COL_COORD_LONG);
 
-            map_intent.setData(geoLocation);
+        Uri geoIntentUri = Uri.parse("geo:" + lat + "," + lon );
 
-            if (map_intent.resolveActivity(getActivity().getPackageManager()) != null) {
-                startActivity(map_intent);
-            } else {
-                Toast.makeText(getContext(), "No map class had been found.", Toast.LENGTH_SHORT).show();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW);
+        mapIntent.setData(geoIntentUri);
+
+        if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivity(mapIntent);
+        } else {
+            Toast.makeText(getContext(), "No map class had been found.", Toast.LENGTH_SHORT).show();
         }
     }
 

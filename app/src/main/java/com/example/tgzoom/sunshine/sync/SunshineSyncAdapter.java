@@ -212,8 +212,10 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         Double lat = coordObject.getDouble(LAT);
 
         long _id = addLocation(location, name, lat, lon);
+
         JSONArray list = forecastJson.getJSONArray(LIST);
         ArrayList<ContentValues> contentValuesArrayList = new ArrayList<ContentValues>();
+
         Time daytime = new Time();
         daytime.setToNow();
         int julianDayStart = Time.getJulianDay(System.currentTimeMillis(), daytime.gmtoff);
@@ -258,21 +260,9 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
             );
         }
 
-        String order = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC ";
-        Cursor cursor = getContext().getContentResolver().query(
-                WeatherContract.WeatherEntry.CONTENT_URI,
-                null, null, null, order
-        );
+        String today = String.valueOf(daytime.setJulianDay(julianDayStart-1));
 
-        if (cursor.moveToFirst()) {
-            contentValuesArrayList = new ArrayList<ContentValues>();
-            do {
-                ContentValues contentValues = new ContentValues();
-                DatabaseUtils.cursorRowToContentValues(cursor, contentValues);
-                contentValuesArrayList.add(contentValues);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
+        int rowsDeleted = getContext().getContentResolver().delete(WeatherContract.WeatherEntry.CONTENT_URI, WeatherContract.WeatherEntry.COLUMN_DATE + " <= ? ",new String[]{today});
     }
 
     /**

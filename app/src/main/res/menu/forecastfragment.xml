@@ -2,11 +2,6 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/refresh"
-        android:title="refresh"
-        android:showAsAction="always"
-        />
-    <item
         android:id="@+id/settings"
         android:title="@string/settings"
         android:showAsAction="always"

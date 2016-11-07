@@ -23,7 +23,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.tgzoom.sunshine.data.WeatherContract;
-import com.example.tgzoom.sunshine.service.SunshineService;
+import com.example.tgzoom.sunshine.sync.SunshineSyncAdapter;
 import com.facebook.stetho.Stetho;
 
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -113,13 +113,13 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_forecast, container, false);
-
 
         listViewForecast = (ListView) rootView.findViewById(R.id.listview_forecast);
         forecastAdapter = new ForecastAdapter(getActivity(), null, 0);
@@ -142,7 +142,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             }
         });
 
-        if(savedInstanceState != null && savedInstanceState.containsKey(LISTVIEW_VISIBLE_POSITION)){
+        if(savedInstanceState != null && savedInstanceState.containsKey(LISTVIEW_VISIBLE_POSITION)) {
             visiblePosition = savedInstanceState.getInt(LISTVIEW_VISIBLE_POSITION);
         }
 
@@ -166,6 +166,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 break;
             case R.id.preferred_location:
                 sendPreferredLocation();
+                break;
+            case R.id.refresh:
+                updateWeather();
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -200,10 +203,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     public void updateWeather() {
-//        new ForecastAsyncTask(getContext()).execute();
-        Intent intentService = new Intent(getActivity(),SunshineService.class);
-        intentService.putExtra(SunshineService.LOCATION_QUERY_EXTRA,Utility.getPreferredLocation(getContext()));
-        getActivity().startService(intentService);
+        SunshineSyncAdapter.syncImmediately(getContext());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)

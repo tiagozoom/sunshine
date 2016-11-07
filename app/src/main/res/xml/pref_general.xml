@@ -14,4 +14,12 @@
         android:dialogTitle="@string/pref_location_dialog_title"
         android:defaultValue="@string/pref_location_default_value"
         />
+
+    <CheckBoxPreference
+        android:key="@string/pref_enable_notifications_key"
+        android:title="@string/pref_enable_notifications_label"
+        android:defaultValue="@string/pref_enable_notifications_default"
+        android:summaryOff="@string/pref_enable_notifications_false"
+        android:summaryOn="@string/pref_enable_notifications_true"
+        />
 </PreferenceScreen>

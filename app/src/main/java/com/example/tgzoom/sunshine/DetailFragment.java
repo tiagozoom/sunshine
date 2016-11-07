@@ -38,7 +38,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     private  Uri mUri;
     static final int DETAIL_LOADER = 111;
-    static final String DETAIL_URI = "detail_uri";
+    public static final String DETAIL_URI = "detail_uri";
 
     static final String[] FORECAST_COLUMNS = {
             WeatherContract.WeatherEntry.TABLE_NAME + "." + WeatherContract.WeatherEntry._ID,
